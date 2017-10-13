@@ -12,7 +12,7 @@ class SearchListAdapter : RecyclerView.Adapter<SearchListAdapter.ViewHolder>() {
     var beerList: MutableList<Beer> = ArrayList()
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        holder?.bind(beerList[position].name)
+        holder?.bind(beerList[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -32,8 +32,9 @@ class SearchListAdapter : RecyclerView.Adapter<SearchListAdapter.ViewHolder>() {
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(beerName: String) {
-            view.beer_name_text_view.text = beerName
+        fun bind(beer: Beer) {
+            view.beer_name_text_view.text = beer.name
+            view.setOnClickListener { DetailActivity.start(view.context, beer) }
         }
     }
 }

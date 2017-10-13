@@ -30,6 +30,10 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <activity
+            android:name=".DetailActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
