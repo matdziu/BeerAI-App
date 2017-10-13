@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="beer_labels"
+        path="Android/data/com.beerai/files/Pictures" />
+</paths>

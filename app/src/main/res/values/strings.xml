@@ -3,4 +3,5 @@
     <string name="search_title">Search</string>
     <string name="search_hint">Search</string>
     <string name="info_text">Welcome to BeerAI!\nYou can scan your beer label or use manual search.\nHappy drinking!</string>
+    <string name="file_error_text">File error occurred</string>
 </resources>
