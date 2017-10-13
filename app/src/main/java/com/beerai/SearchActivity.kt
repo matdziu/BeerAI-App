@@ -53,6 +53,18 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                searchView.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                // api magic
+                return true
+            }
+        })
+
         return true
     }
 }
