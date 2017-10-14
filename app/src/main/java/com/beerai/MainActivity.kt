@@ -24,7 +24,9 @@ class MainActivity : AppCompatActivity() {
 
     val REQUEST_IMAGE_CAPTURE = 1
     var currentImageFile: File? = null
+
     lateinit var recognizerRepository: RecognizerRepository
+    lateinit var beerDatabaseRepository: BeerDatabaseRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         val recognizerAPI = (application as BeerAIApplication).getRecognizerAPI()
         recognizerRepository = RecognizerRepository(recognizerAPI)
+        beerDatabaseRepository = BeerDatabaseRepository()
 
         scan_label_button.setOnClickListener {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -75,8 +78,11 @@ class MainActivity : AppCompatActivity() {
                     .subscribe(
                             {
                                 response ->
-                                showProgressBar(false)
-                                Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+                                beerDatabaseRepository.getBeerInfo(response)
+                                        .subscribe({ beer ->
+                                            showProgressBar(false)
+                                            DetailActivity.start(this, beer)
+                                        })
                             },
                             {
                                 error ->
