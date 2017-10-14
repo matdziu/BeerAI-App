@@ -29,7 +29,12 @@ class BeerDatabaseRepository {
 
     fun searchForBeers(query: String): Observable<List<Beer?>> {
         val subject: PublishSubject<List<Beer?>> = PublishSubject.create()
-        database.getReference("/beers").orderByChild("name").startAt(query.toLowerCase().capitalize())
+        val queryWordList = query.trim().split(" ")
+        val formattedQueryWordList = queryWordList.map { it.toLowerCase().capitalize() }
+        val formattedQuery = formattedQueryWordList.joinToString(" ")
+        database.getReference("/beers").orderByChild("name")
+                .startAt(formattedQuery)
+                .endAt(formattedQuery + "\uf8ff")
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val beerList = dataSnapshot.children.map { it.getValue(Beer::class.java) }
