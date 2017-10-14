@@ -5,4 +5,5 @@
     <string name="info_text">Welcome to BeerAI!\nYou can scan your beer label or use manual search.\nHappy drinking!</string>
     <string name="file_error_text">File error occurred</string>
     <string name="recognizer_error_text">Error occurred</string>
+    <string name="search_info_text">Type beer name</string>
 </resources>

@@ -26,4 +26,20 @@ class BeerDatabaseRepository {
         })
         return subject
     }
+
+    fun searchForBeers(query: String): Observable<List<Beer?>> {
+        val subject: PublishSubject<List<Beer?>> = PublishSubject.create()
+        database.getReference("/beers").orderByChild("name").startAt(query.toLowerCase().capitalize())
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val beerList = dataSnapshot.children.map { it.getValue(Beer::class.java) }
+                        subject.onNext(beerList)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError?) {
+                        Log.e("FirebaseDatabase", databaseError.toString())
+                    }
+                })
+        return subject
+    }
 }

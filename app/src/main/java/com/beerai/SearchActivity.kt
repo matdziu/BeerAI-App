@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 class SearchActivity : AppCompatActivity() {
 
     val searchListAdapter = SearchListAdapter()
+    val beerDatabaseRepository = BeerDatabaseRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,14 +25,6 @@ class SearchActivity : AppCompatActivity() {
 
         search_recycler_view.layoutManager = LinearLayoutManager(this)
         search_recycler_view.adapter = searchListAdapter
-
-        val beer1 = Beer("Zywiec", "adajdka")
-        val beer2 = Beer("Warka", "adajdka")
-        val beer3 = Beer("Zubr", "adajdka")
-        val beer4 = Beer("Harnas", "adajdka")
-
-        val beerList = listOf(beer1, beer2, beer3, beer4)
-        searchListAdapter.update(beerList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -53,18 +47,49 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+        @Suppress("UNCHECKED_CAST")
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null && !query.isEmpty()) {
+                    showProgressBar(true)
+                    showSearchInfoText(false)
+                    beerDatabaseRepository.searchForBeers(query)
+                            .subscribe({
+                                beerList ->
+                                searchListAdapter.update(beerList as List<Beer>)
+                                showProgressBar(false)
+                                if (beerList.isEmpty()) {
+                                    showSearchInfoText(true)
+                                }
+                            })
+                }
                 searchView.clearFocus()
                 return true
             }
 
-            override fun onQueryTextChange(p0: String?): Boolean {
-                // api magic
+            override fun onQueryTextChange(query: String?): Boolean {
                 return true
             }
         })
 
         return true
+    }
+
+    private fun showProgressBar(show: Boolean) {
+        if (show) {
+            search_recycler_view.visibility = View.GONE
+            progress_bar.visibility = View.VISIBLE
+        } else {
+            search_recycler_view.visibility = View.VISIBLE
+            progress_bar.visibility = View.GONE
+        }
+    }
+
+    private fun showSearchInfoText(show: Boolean) {
+        if (show) {
+            search_info_text_view.visibility = View.VISIBLE
+        } else {
+            search_info_text_view.visibility = View.GONE
+        }
     }
 }
