@@ -14,11 +14,6 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -29,14 +24,15 @@ class MainActivity : AppCompatActivity() {
 
     val REQUEST_IMAGE_CAPTURE = 1
     var currentImageFile: File? = null
-    lateinit var recognizerAPI: RecognizerAPI
+    lateinit var recognizerRepository: RecognizerRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        recognizerAPI = (application as BeerAIApplication).getRecognizerAPI()
+        val recognizerAPI = (application as BeerAIApplication).getRecognizerAPI()
+        recognizerRepository = RecognizerRepository(recognizerAPI)
 
         scan_label_button.setOnClickListener {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -75,11 +71,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             showProgressBar(true)
-            val imageFile = RequestBody.create(MediaType.parse("image/*"), currentImageFile)
-            val body = MultipartBody.Part.createFormData("image_file", currentImageFile?.name, imageFile)
-            recognizerAPI.predict(body)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            recognizerRepository.predict(currentImageFile)
                     .subscribe(
                             {
                                 response ->
