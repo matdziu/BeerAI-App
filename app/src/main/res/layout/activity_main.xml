@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/toolbar_view"
-        layout="@layout/toolbar" />
+    <include layout="@layout/toolbar" />
 
     <RelativeLayout
         android:id="@+id/main_content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_view">
+        android:layout_below="@+id/toolbar"
+        tools:ignore="UnknownIdInLayout">
 
         <TextView
             android:id="@+id/info_text_view"
